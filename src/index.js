@@ -1,5 +1,9 @@
 // @flow
-function test(a: number) {
-    return a ** 2;
-}
-console.log(test(5));
+import Koa from 'koa';
+import router from './router';
+import start from './utils/start';
+
+const app = new Koa();
+
+start(app);
+app.use(router);

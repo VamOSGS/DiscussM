@@ -74,12 +74,92 @@ module.exports = __webpack_require__(1);
 
 /***/ }),
 /* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__router__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_start__ = __webpack_require__(7);
+
+
+
+
+const app = new __WEBPACK_IMPORTED_MODULE_0_koa___default.a();
+
+Object(__WEBPACK_IMPORTED_MODULE_2__utils_start__["a" /* default */])(app);
+app.use(__WEBPACK_IMPORTED_MODULE_1__router__["a" /* default */]);
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports) {
 
-function test(a) {
-    return a ** 2;
-}
-console.log(test(5));
+module.exports = require("koa");
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_combine_routers__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root__ = __webpack_require__(5);
+
+
+
+const router = __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers___default()([__WEBPACK_IMPORTED_MODULE_1__root__["a" /* default */]]);
+
+/* harmony default export */ __webpack_exports__["a"] = (router);
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("koa-combine-routers");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
+
+const root = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a();
+
+root.get('/', ctx => {
+    ctx.body = '<h1>Working...</h1>';
+});
+
+/* harmony default export */ __webpack_exports__["a"] = (root);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = require("koa-router");
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_dotenv__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_dotenv___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_dotenv__);
+
+__WEBPACK_IMPORTED_MODULE_0_dotenv___default.a.config({ silent: "development" === 'production' });
+const { PORT, HOST } = process.env;
+
+/* harmony default export */ __webpack_exports__["a"] = (function (app) {
+    app.listen(PORT, () => console.log(`started in http://${HOST}:${PORT}`));
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = require("dotenv");
 
 /***/ })
 /******/ ]);
