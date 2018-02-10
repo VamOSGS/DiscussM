@@ -1,0 +1,10 @@
+{
+    "parser": "babel-eslint",
+    "extends": ["plugin:flowtype/recommended", "google"],
+    "rules": {
+        "linebreak-style": "off",
+        "require-jsdoc": "off",
+        "no-unused-vars": "warn",
+        "flowtype/boolean-style": "off"
+    }
+}
