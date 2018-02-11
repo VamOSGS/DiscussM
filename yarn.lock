@@ -2782,9 +2782,9 @@ jws@^3.1.4:
     jwa "^1.1.4"
     safe-buffer "^5.0.1"
 
-jwt-koa@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/jwt-koa/-/jwt-koa-1.1.1.tgz#4e82fabb107395800ea9a04192e2dafcc739e99b"
+jwt-koa@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/jwt-koa/-/jwt-koa-1.1.2.tgz#46fee2e8e97846b2c3f88ec4497caa4b93c5b3bf"
   dependencies:
     jsonwebtoken "^8.1.0"
 
