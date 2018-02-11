@@ -148,7 +148,7 @@ module.exports = require("koa-router");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_dotenv__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_dotenv___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_dotenv__);
 
-__WEBPACK_IMPORTED_MODULE_0_dotenv___default.a.config({ silent: "development" === 'production' });
+__WEBPACK_IMPORTED_MODULE_0_dotenv___default.a.config({ silent: "production" === 'production' });
 const { PORT, HOST } = process.env;
 
 /* harmony default export */ __webpack_exports__["a"] = (function (app) {
