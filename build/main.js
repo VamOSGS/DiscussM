@@ -144,12 +144,12 @@ const UserSchema = new __WEBPACK_IMPORTED_MODULE_0_mongoose__["Schema"]({
     gender: { type: String, required: true },
     image: { type: String },
     age: { type: Number, required: true },
-    password: { type: String, required: true }
+    password: { type: String } // social auth will not have password
 });
 
 const user = __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.model('User', UserSchema);
 
-/* unused harmony default export */ var _unused_webpack_default_export = (user);
+/* harmony default export */ __webpack_exports__["a"] = (user);
 
 /***/ }),
 
@@ -965,6 +965,39 @@ exports.getRounds = getRounds;
 
 /***/ }),
 
+/***/ 821:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = register;
+/* harmony export (immutable) */ __webpack_exports__["a"] = check;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__models_user__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bcrypt_nodejs__ = __webpack_require__(820);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bcrypt_nodejs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bcrypt_nodejs__);
+
+
+
+
+
+async function register(data) {
+    const user = await new __WEBPACK_IMPORTED_MODULE_0__models_user__["a" /* default */]({
+        username: data.username,
+        name: data.name,
+        age: data.age,
+        gender: data.gender,
+        image: data.image
+    });
+    const salt = __WEBPACK_IMPORTED_MODULE_1_bcrypt_nodejs___default.a.genSaltSync(10);
+    user.password = __WEBPACK_IMPORTED_MODULE_1_bcrypt_nodejs___default.a.hashSync(data.password, salt);
+    return user.save();
+}
+
+async function check(username) {
+    return __WEBPACK_IMPORTED_MODULE_0__models_user__["a" /* default */].findOne({ username });
+}
+
+/***/ }),
+
 /***/ 9:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -973,7 +1006,7 @@ exports.getRounds = getRounds;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_user__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_methods__ = __webpack_require__(821);
 
 
 
@@ -984,9 +1017,17 @@ auth.post('/login', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), as
     console.log('login', ctx.request.body);
     ctx.response.body = 'good job';
 });
+
 auth.post('/register', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
-    console.log('register', ctx.request.body);
-    ctx.response.body = 'good job';
+    await Object(__WEBPACK_IMPORTED_MODULE_2__utils_methods__["a" /* check */])(ctx.request.body.username).then(async data => {
+        if (data === null) {
+            await Object(__WEBPACK_IMPORTED_MODULE_2__utils_methods__["b" /* register */])(ctx.request.body).then(user => {
+                ctx.response.body = { user, token: null };
+            });
+        } else {
+            ctx.response.body = { message: 'Username taken' };
+        }
+    });
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (auth);
