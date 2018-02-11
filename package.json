@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "engines": {
+    "node": "9.5.0"
+  },
   "scripts": {
     "start": "node ./build/main",
     "flow": "./node_modules/.bin/flow",
@@ -23,6 +26,9 @@
   "dependencies": {
     "koa": "^2.4.1",
     "koa-combine-routers": "^2.0.1",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.33.2"
   }
 }
