@@ -25,8 +25,8 @@
     },
     "dependencies": {
         "bcrypt-nodejs": "^0.0.3",
-        "bcryptjs": "^2.4.3",
         "bluebird": "^3.5.1",
+        "jwt-koa": "^1.1.2",
         "koa": "^2.4.1",
         "koa-bodyparser": "^4.2.0",
         "koa-combine-routers": "^2.0.1",

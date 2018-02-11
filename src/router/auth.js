@@ -1,23 +1,17 @@
 import Router from 'koa-router';
 import koaBody from 'koa-bodyparser';
-import { register, check } from '../utils/methods';
+import { register, login } from '../db/methods';
 
 const auth = new Router();
-
 auth.post('/login', koaBody(), async (ctx) => {
-    console.log('login', ctx.request.body);
-    ctx.response.body = 'good job';
+    await login(ctx.request.body).then((res) => {
+        ctx.response.body = res;
+    });
 });
 
 auth.post('/register', koaBody(), async (ctx) => {
-    await check(ctx.request.body.username).then(async (data) => {
-        if (data === null) {
-            await register(ctx.request.body).then((user) => {
-                ctx.response.body = { user, token: null };
-            });
-        } else {
-            ctx.response.body = { message: 'Username taken' };
-        }
+    await register(ctx.request.body).then((res) => {
+        ctx.response.body = res;
     });
 });
 

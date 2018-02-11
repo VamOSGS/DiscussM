@@ -1,5 +1,5 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
-import startDb from './db';
+import startDb from '../db/';
 
 const { PORT, HOST } = process.env;
 
