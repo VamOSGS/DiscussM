@@ -1,35 +1,35 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "engines": {
-    "node": "9.5.0"
-  },
-  "scripts": {
-    "start": "node ./build/main",
-    "flow": "./node_modules/.bin/flow",
-    "dev": "./node_modules/.bin/backpack dev",
-    "build": "./node_modules/.bin/backpack build"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.0.0-beta.39",
-    "@babel/plugin-transform-flow-strip-types": "^7.0.0-beta.39",
-    "babel-eslint": "^8.2.1",
-    "backpack-core": "^0.5.0",
-    "eslint": "^4.17.0",
-    "eslint-config-google": "^0.9.1",
-    "eslint-plugin-flowtype": "^2.43.0",
-    "flow-bin": "^0.65.0"
-  },
-  "dependencies": {
-    "koa": "^2.4.1",
-    "dotenv": "^5.0.0",
-    "koa-combine-routers": "^2.0.1",
-    "koa-router": "^7.4.0",
-    "pg": "^7.4.1",
-    "pg-hstore": "^2.3.2",
-    "sequelize": "^4.33.2",
-    "source-map-support": "^0.5.3"
-  }
+    "name": "backend",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "engines": {
+        "node": "9.5.0"
+    },
+    "scripts": {
+        "start": "node build/main",
+        "flow": "./node_modules/.bin/flow",
+        "dev": "./node_modules/.bin/backpack dev",
+        "build": "./node_modules/.bin/backpack build"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.0.0-beta.39",
+        "@babel/plugin-transform-flow-strip-types": "^7.0.0-beta.39",
+        "babel-eslint": "^8.2.1",
+        "backpack-core": "^0.5.0",
+        "eslint": "^4.17.0",
+        "eslint-config-google": "^0.9.1",
+        "eslint-plugin-flowtype": "^2.43.0",
+        "dotenv": "^5.0.0",
+        "flow-bin": "^0.65.0"
+    },
+    "dependencies": {
+        "koa": "^2.4.1",
+        "koa-combine-routers": "^2.0.1",
+        "koa-router": "^7.4.0",
+        "pg": "^7.4.1",
+        "pg-hstore": "^2.3.2",
+        "sequelize": "^4.33.2",
+        "source-map-support": "^0.5.3"
+    }
 }
