@@ -62,20 +62,20 @@ module.exports =
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports) {
 
-module.exports = require("dotenv");
+module.exports = require("koa-router");
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("koa-router");
+module.exports = require("mongoose");
 
 /***/ }),
 /* 2 */
@@ -87,135 +87,10 @@ module.exports = require("jwt-koa");
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("mongoose");
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(5);
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__router__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_start__ = __webpack_require__(16);
-
-
-
-if (true) __webpack_require__(0).config();
-
-const app = new __WEBPACK_IMPORTED_MODULE_0_koa___default.a();
-
-Object(__WEBPACK_IMPORTED_MODULE_2__utils_start__["a" /* default */])(app);
-app.use(__WEBPACK_IMPORTED_MODULE_1__router__["a" /* default */]);
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-module.exports = require("koa");
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_combine_routers__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__auth__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__messages__ = __webpack_require__(20);
-
-
-
-
-
-const router = __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers___default()([__WEBPACK_IMPORTED_MODULE_1__root__["a" /* default */], __WEBPACK_IMPORTED_MODULE_3__messages__["a" /* default */], __WEBPACK_IMPORTED_MODULE_2__auth__["a" /* default */]]);
-
-/* harmony default export */ __webpack_exports__["a"] = (router);
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-module.exports = require("koa-combine-routers");
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jwt_koa__);
-
-
-
-const root = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a();
-
-root.get('/check', __WEBPACK_IMPORTED_MODULE_1_jwt_koa___default.a.middleware, ctx => {
-    ctx.body = 'SECRET';
-});
-root.get('/', async ctx => {
-    ctx.body = ` <h1>Working...</h1>`;
-});
-
-/* harmony default export */ __webpack_exports__["a"] = (root);
-
-/***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__db_methods__ = __webpack_require__(12);
-
-
-
-
-const auth = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a();
-auth.post('/login', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
-    if (ctx.request.body.username && ctx.request.body.password) {
-        await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["b" /* login */])(ctx.request.body).then(res => {
-            ctx.response.body = res;
-        });
-    } else {
-        ctx.response.body = { success: true, message: 'no enough data!' };
-    }
-});
-
-auth.post('/register', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
-    const { username, password, email } = ctx.request.body;
-    if (username && password && email) {
-        await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["c" /* register */])(ctx.request.body).then(res => {
-            ctx.response.body = res;
-        });
-    } else {
-        ctx.response.body = { success: true, message: 'no enough data!' };
-    }
-});
-
-/* harmony default export */ __webpack_exports__["a"] = (auth);
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
 module.exports = require("koa-bodyparser");
 
 /***/ }),
-/* 12 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -224,11 +99,11 @@ module.exports = require("koa-bodyparser");
 /* harmony export (immutable) */ __webpack_exports__["b"] = login;
 /* harmony export (immutable) */ __webpack_exports__["d"] = sendMessage;
 /* harmony export (immutable) */ __webpack_exports__["a"] = getMessages;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jwt_koa__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_index_js__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_index_js__ = __webpack_require__(14);
 
 
 
@@ -315,13 +190,184 @@ async function getMessages(user) {
 }
 
 /***/ }),
-/* 13 */
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("bluebird");
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(7);
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(3);
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__router__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_start__ = __webpack_require__(18);
+
+
+
+if (false) require('dotenv').config();
+
+const app = new __WEBPACK_IMPORTED_MODULE_0_koa___default.a();
+
+Object(__WEBPACK_IMPORTED_MODULE_2__utils_start__["a" /* default */])(app);
+app.use(__WEBPACK_IMPORTED_MODULE_1__router__["a" /* default */]);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = require("koa");
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_combine_routers__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__auth__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__messages__ = __webpack_require__(17);
+
+
+
+
+
+const router = __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers___default()([__WEBPACK_IMPORTED_MODULE_1__root__["a" /* default */], __WEBPACK_IMPORTED_MODULE_3__messages__["a" /* default */], __WEBPACK_IMPORTED_MODULE_2__auth__["a" /* default */]]);
+
+/* harmony default export */ __webpack_exports__["a"] = (router);
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = require("koa-combine-routers");
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jwt_koa__);
+
+
+
+const root = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a();
+
+root.get('/check', __WEBPACK_IMPORTED_MODULE_1_jwt_koa___default.a.middleware, ctx => {
+    ctx.body = 'SECRET';
+});
+root.get('/', async ctx => {
+    ctx.body = ` <h1>Working...</h1>`;
+});
+
+/* harmony default export */ __webpack_exports__["a"] = (root);
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__db_methods__ = __webpack_require__(4);
+
+
+
+
+const auth = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a();
+auth.post('/login', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
+    if (ctx.request.body.username && ctx.request.body.password) {
+        await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["b" /* login */])(ctx.request.body).then(res => {
+            ctx.response.body = res;
+        });
+    } else {
+        ctx.response.body = { success: true, message: 'no enough data!' };
+    }
+});
+
+auth.post('/register', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
+    const { username, password, email } = ctx.request.body;
+    if (username && password && email) {
+        await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["c" /* register */])(ctx.request.body).then(res => {
+            ctx.response.body = res;
+        });
+    } else {
+        ctx.response.body = { success: true, message: 'no enough data!' };
+    }
+});
+
+/* harmony default export */ __webpack_exports__["a"] = (auth);
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("bcrypt-nodejs");
+
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__message__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__user__ = __webpack_require__(16);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__message__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__user__["a"]; });
+
+
+
+
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bluebird__);
+
+
+__WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Promise = __WEBPACK_IMPORTED_MODULE_1_bluebird___default.a;
+
+const MessageSchema = new __WEBPACK_IMPORTED_MODULE_0_mongoose__["Schema"]({
+    user: {
+        id: { type: String, required: true },
+        username: { type: String, required: true }
+    },
+    messages: { type: Array }
+});
+
+const message = __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.model('Message', MessageSchema);
+
+/* harmony default export */ __webpack_exports__["a"] = (message);
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bluebird__);
 
 
@@ -343,99 +389,15 @@ const user = __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.model('User', User
 /* harmony default export */ __webpack_exports__["a"] = (user);
 
 /***/ }),
-/* 14 */
-/***/ (function(module, exports) {
-
-module.exports = require("bluebird");
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports) {
-
-module.exports = require("bcrypt-nodejs");
-
-/***/ }),
-/* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__db___ = __webpack_require__(17);
-if (true) __webpack_require__(0).config();
-
-
-const { PORT, HOST } = process.env;
-
-/* harmony default export */ __webpack_exports__["a"] = (function (app) {
-    Object(__WEBPACK_IMPORTED_MODULE_0__db___["a" /* default */])();
-    app.listen(PORT || 8000, () => console.log(`started in http://${HOST}:${PORT}`));
-});
-
-/***/ }),
 /* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
-if (true) __webpack_require__(0).config();
-
-
-const { DB_USER, DB_USER_PASS, DB_HOST, DB_PORT, DB_NAME } = process.env;
-
-/* harmony default export */ __webpack_exports__["a"] = (function () {
-    __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.connect(`mongodb://${DB_USER}:${DB_USER_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`);
-});
-
-/***/ }),
-/* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__message__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__user__ = __webpack_require__(13);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__message__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__user__["a"]; });
-
-
-
-
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bluebird__);
-
-
-__WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Promise = __WEBPACK_IMPORTED_MODULE_1_bluebird___default.a;
-
-const MessageSchema = new __WEBPACK_IMPORTED_MODULE_0_mongoose__["Schema"]({
-    user: {
-        id: { type: String, required: true },
-        username: { type: String, required: true }
-    },
-    messages: { type: Array }
-});
-
-const message = __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.model('Message', MessageSchema);
-
-/* harmony default export */ __webpack_exports__["a"] = (message);
-
-/***/ }),
-/* 20 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__db_methods__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__db_methods__ = __webpack_require__(4);
 
 
 
@@ -458,6 +420,38 @@ messages.patch('/messages', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (messages);
+
+/***/ }),
+/* 18 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__db___ = __webpack_require__(19);
+if (false) require('dotenv').config();
+
+
+const { PORT, HOST } = process.env;
+
+/* harmony default export */ __webpack_exports__["a"] = (function (app) {
+    Object(__WEBPACK_IMPORTED_MODULE_0__db___["a" /* default */])();
+    app.listen(PORT || 8000, () => console.log(`started in http://${HOST}:${PORT}`));
+});
+
+/***/ }),
+/* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
+if (false) require('dotenv').config();
+
+
+const { DB_USER, DB_USER_PASS, DB_HOST, DB_PORT, DB_NAME } = process.env;
+
+/* harmony default export */ __webpack_exports__["a"] = (function () {
+    __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.connect(`mongodb://${DB_USER}:${DB_USER_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`);
+});
 
 /***/ })
 /******/ ]);
