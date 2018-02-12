@@ -9,3 +9,14 @@ export type UserType = {
     email: string,
     password: string,
 };
+
+export type MessageType = {
+    to: {
+        username: string,
+        id: string,
+    },
+    message: {
+        date: Date,
+        message: string,
+    },
+};

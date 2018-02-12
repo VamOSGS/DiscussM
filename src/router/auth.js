@@ -4,15 +4,24 @@ import { register, login } from '../db/methods';
 
 const auth = new Router();
 auth.post('/login', koaBody(), async (ctx) => {
-    await login(ctx.request.body).then((res) => {
-        ctx.response.body = res;
-    });
+    if (ctx.request.body.username && ctx.request.body.password) {
+        await login(ctx.request.body).then((res) => {
+            ctx.response.body = res;
+        });
+    } else {
+        ctx.response.body = { success: true, message: 'no enough data!' };
+    }
 });
 
 auth.post('/register', koaBody(), async (ctx) => {
-    await register(ctx.request.body).then((res) => {
-        ctx.response.body = res;
-    });
+    const { username, password, email } = ctx.request.body;
+    if (username && password && email) {
+        await register(ctx.request.body).then((res) => {
+            ctx.response.body = res;
+        });
+    } else {
+        ctx.response.body = { success: true, message: 'no enough data!' };
+    }
 });
 
 export default auth;

@@ -1,10 +1,11 @@
 // @flow
 import type { UserType } from '../types.flow';
-import User from '../models/user';
 import bcrypt from 'bcrypt-nodejs';
 import { createToken } from 'jwt-koa';
+import { User, Message } from '../models/index.js';
+import type { MessageType } from '../types.flow';
 
-export async function check(details) {
+export async function check(details: { username?: string, email?: string }) {
     return User.findOne(details);
 }
 
@@ -51,4 +52,38 @@ export async function login(data: { username: string, password: string }) {
             }
         }
     });
+}
+
+export function sendMessage(data: MessageType): Promise<any> {
+    return new Promise((resolve, reject) => {
+        check({ username: data.to.username }).then((user) => {
+            if (user === null) {
+                reject({
+                    success: false,
+                    message: 'User not found!',
+                });
+            } else {
+                Message.findOneAndUpdate(
+                    { user: data.to },
+                    {
+                        $push: { messages: data.message },
+                    },
+                    { new: true, safe: true, upsert: true },
+                    (err, res) => {
+                        if (err) {
+                            reject({
+                                success: false,
+                                message: 'Message isn\'t sent!',
+                            });
+                        }
+                        resolve({ success: true, res });
+                    }
+                );
+            }
+        });
+    });
+}
+
+export async function getMessages(user: { id: string, username: string }) {
+    return Message.findOne({ user });
 }
