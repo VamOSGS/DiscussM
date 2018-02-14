@@ -24,12 +24,14 @@
         "flow-bin": "^0.65.0"
     },
     "dependencies": {
+        "@koa/cors": "2",
         "bcrypt-nodejs": "^0.0.3",
         "bluebird": "^3.5.1",
         "jwt-koa": "^1.1.2",
         "koa": "^2.4.1",
         "koa-bodyparser": "^4.2.0",
         "koa-combine-routers": "^2.0.1",
+        "koa-multer": "^1.0.2",
         "koa-router": "^7.4.0",
         "mongoose": "^5.0.4",
         "source-map-support": "^0.5.3"
