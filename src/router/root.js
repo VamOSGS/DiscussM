@@ -1,23 +1,14 @@
 import Router from 'koa-router';
 import jwtKoa from 'jwt-koa';
-import multer from 'koa-multer';
-import path from 'path';
+import upload from '../utils/upload';
+import koaBody from 'koa-bodyparser';
 
 const root = new Router();
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.resolve('uploads/'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, ` ${Date.now()}&${file.originalname}`);
-    },
-});
-const upload = multer({ storage });
-
-root.post('/upload', upload.single('file'), async (ctx) => {
+root.post('/upload', upload.single('file'), koaBody(), async (ctx) => {
     const { file } = ctx.req;
     console.log(file);
+    console.log(ctx.req.body);
 });
 
 root.get('/check', jwtKoa.middleware, (ctx) => {
