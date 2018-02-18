@@ -62,7 +62,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -75,71 +75,23 @@ module.exports = require("koa-router");
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("koa-bodyparser");
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = require("mongoose");
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-module.exports = require("dotenv");
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
 module.exports = require("path");
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = require("jwt-koa");
-
-/***/ }),
-/* 6 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_multer__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_multer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_multer__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_path__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_path__);
-
-
-
-const storage = __WEBPACK_IMPORTED_MODULE_0_koa_multer___default.a.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, __WEBPACK_IMPORTED_MODULE_1_path___default.a.resolve('./static/uploads/'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-});
-const upload = __WEBPACK_IMPORTED_MODULE_0_koa_multer___default()({ storage });
-
-/* harmony default export */ __webpack_exports__["a"] = (upload);
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export check */
-/* harmony export (immutable) */ __webpack_exports__["c"] = register;
-/* harmony export (immutable) */ __webpack_exports__["b"] = login;
-/* harmony export (immutable) */ __webpack_exports__["d"] = sendMessage;
-/* harmony export (immutable) */ __webpack_exports__["a"] = getMessages;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs__ = __webpack_require__(18);
+/* harmony export (immutable) */ __webpack_exports__["a"] = check;
+/* harmony export (immutable) */ __webpack_exports__["d"] = register;
+/* harmony export (immutable) */ __webpack_exports__["c"] = login;
+/* harmony export (immutable) */ __webpack_exports__["e"] = sendMessage;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getMessages;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jwt_koa__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_index_js__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_index_js__ = __webpack_require__(17);
 
 
 
@@ -156,14 +108,15 @@ async function register(data) {
         if (res === null) {
             return check({ email: data.email }).then(async res2 => {
                 if (res2 === null) {
-                    const user = await new __WEBPACK_IMPORTED_MODULE_2__models_index_js__["b" /* User */]({
+                    const user = new __WEBPACK_IMPORTED_MODULE_2__models_index_js__["b" /* User */]({
                         username: data.username,
                         name: data.name,
                         age: data.age,
                         email: data.email,
-                        gender: data.gender,
-                        image: data.image
+                        gender: data.gender
                     });
+                    user.image = data.image === '' ? '/uploads/user-default.png' : data.image;
+
                     const salt = __WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs___default.a.genSaltSync(10);
                     user.password = __WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs___default.a.hashSync(data.password, salt);
                     return user.save().then(user => {
@@ -171,11 +124,20 @@ async function register(data) {
                         return { success: true, user, token };
                     });
                 } else {
-                    return { success: false, message: 'Email registred!' };
+                    return {
+                        success: false,
+                        error: {
+                            field: 'email',
+                            message: 'Email registred!'
+                        }
+                    };
                 }
             });
         } else {
-            return { success: false, message: 'Username taken!' };
+            return {
+                success: false,
+                error: { field: 'username', message: 'Username taken!' }
+            };
         }
     });
 }
@@ -183,14 +145,20 @@ async function register(data) {
 async function login(data) {
     return check({ username: data.username }).then(user => {
         if (user === null) {
-            return { success: false, message: 'User not found!' };
+            return {
+                success: false,
+                error: { field: 'username', message: 'User not found!' }
+            };
         } else {
             const passCheck = __WEBPACK_IMPORTED_MODULE_0_bcrypt_nodejs___default.a.compareSync(data.password, user.password);
             if (passCheck === true) {
                 const token = Object(__WEBPACK_IMPORTED_MODULE_1_jwt_koa__["createToken"])({ user }, '10m');
                 return { success: true, user, token };
             } else {
-                return { success: false, message: 'Wrong password!' };
+                return {
+                    success: false,
+                    error: { field: 'password', message: 'Wrong password!' }
+                };
             }
         }
     });
@@ -202,7 +170,7 @@ function sendMessage(data) {
             if (user === null) {
                 reject({
                     success: false,
-                    message: 'User not found!'
+                    error: { field: 'user', message: 'Wrong password!' }
                 });
             } else {
                 __WEBPACK_IMPORTED_MODULE_2__models_index_js__["a" /* Message */].findOneAndUpdate({ user: data.to }, {
@@ -226,6 +194,36 @@ async function getMessages(user) {
 }
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose");
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("dotenv");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("koa");
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = require("jwt-koa");
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = require("koa-send");
+
+/***/ }),
 /* 8 */
 /***/ (function(module, exports) {
 
@@ -233,47 +231,50 @@ module.exports = require("bluebird");
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__(10);
-
+module.exports = require("koa-bodyparser");
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(11);
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_path__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_koa__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__koa_cors__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__koa_cors___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__koa_cors__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__router__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_start__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_koa_static__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_koa_static___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_koa_static__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__koa_cors__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__koa_cors___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__koa_cors__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__router__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_start__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_koa_mount__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_koa_mount___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_koa_mount__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_serveFront__ = __webpack_require__(27);
 
 
 
 
 
-if (true) __webpack_require__(3).config();
 
 
-const app = new __WEBPACK_IMPORTED_MODULE_1_koa___default.a();
+if (true) __webpack_require__(4).config();
 
-Object(__WEBPACK_IMPORTED_MODULE_4__utils_start__["a" /* default */])(app);
-app.use(__WEBPACK_IMPORTED_MODULE_5_koa_static___default()(__WEBPACK_IMPORTED_MODULE_0_path___default.a.resolve('./static')));
-app.use(__WEBPACK_IMPORTED_MODULE_2__koa_cors___default()('*'));
-app.use(__WEBPACK_IMPORTED_MODULE_3__router__["a" /* default */]);
+const app = new __WEBPACK_IMPORTED_MODULE_0_koa___default.a();
+const api = new __WEBPACK_IMPORTED_MODULE_0_koa___default.a();
 
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
+Object(__WEBPACK_IMPORTED_MODULE_3__utils_start__["a" /* default */])(app);
+api.use(__WEBPACK_IMPORTED_MODULE_1__koa_cors___default()('*'));
+api.use(__WEBPACK_IMPORTED_MODULE_2__router__["a" /* default */]);
 
-module.exports = require("koa");
+app.use(__WEBPACK_IMPORTED_MODULE_4_koa_mount___default()('/api', api));
+app.use(__WEBPACK_IMPORTED_MODULE_4_koa_mount___default()('/', __WEBPACK_IMPORTED_MODULE_5__utils_serveFront__["a" /* default */]));
 
 /***/ }),
 /* 12 */
@@ -289,8 +290,8 @@ module.exports = require("@koa/cors");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_combine_routers___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_combine_routers__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__auth__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__messages__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__auth__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__messages__ = __webpack_require__(23);
 
 
 
@@ -313,11 +314,9 @@ module.exports = require("koa-combine-routers");
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jwt_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jwt_koa__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_upload__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_koa_bodyparser__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_koa_bodyparser__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__db_methods__ = __webpack_require__(2);
 
 
 
@@ -325,14 +324,28 @@ module.exports = require("koa-combine-routers");
 
 const root = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a();
 
-root.post('/upload', __WEBPACK_IMPORTED_MODULE_2__utils_upload__["a" /* default */].single('file'), __WEBPACK_IMPORTED_MODULE_3_koa_bodyparser___default()(), async ctx => {
-    const { file } = ctx.req;
-    console.log(file);
-    console.log(ctx.req.body);
-});
-
 root.get('/check', __WEBPACK_IMPORTED_MODULE_1_jwt_koa___default.a.middleware, ctx => {
     ctx.body = 'SECRET';
+});
+root.get('/user/:username', async ctx => {
+    const { username } = ctx.params;
+    const user = await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["a" /* check */])({ username });
+    if (user == null) {
+        ctx.body = {
+            success: false,
+            message: 'User not found'
+        };
+    } else {
+        ctx.body = {
+            success: true,
+            id: user._id,
+            username: user.username,
+            image: user.image,
+            name: user.name,
+            gender: user.gender,
+            age: user.age
+        };
+    }
 });
 root.get('/', async ctx => {
     ctx.body = ` <h1>Working...</h1>`;
@@ -344,67 +357,15 @@ root.get('/', async ctx => {
 /* 16 */
 /***/ (function(module, exports) {
 
-module.exports = require("koa-multer");
+module.exports = require("bcrypt-nodejs");
 
 /***/ }),
 /* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__db_methods__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_upload__ = __webpack_require__(6);
-
-
-
-
-
-const auth = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a();
-
-auth.post('/login', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
-    if (ctx.request.body.username && ctx.request.body.password) {
-        await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["b" /* login */])(ctx.request.body).then(res => {
-            ctx.response.body = res;
-        });
-    } else {
-        ctx.response.body = { success: true, message: 'no enough data!' };
-    }
-});
-
-auth.post('/register', __WEBPACK_IMPORTED_MODULE_3__utils_upload__["a" /* default */].single('file'), __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
-    const { username, password, email, gender, age } = ctx.req.body;
-    const { filename } = ctx.req.file;
-    if (username && password && email && gender && age) {
-        const image = filename ? `/uploads/${filename}` : '';
-        const userBody = Object.assign({}, ctx.req.body, {
-            image
-        });
-        await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["c" /* register */])(userBody).then(res => {
-            ctx.response.body = res;
-        });
-    } else {
-        ctx.response.body = { success: true, message: 'no enough data!' };
-    }
-});
-
-/* harmony default export */ __webpack_exports__["a"] = (auth);
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-module.exports = require("bcrypt-nodejs");
-
-/***/ }),
-/* 19 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__message__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__user__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__message__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__user__ = __webpack_require__(19);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__message__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__user__["a"]; });
 
@@ -414,11 +375,11 @@ module.exports = require("bcrypt-nodejs");
 
 
 /***/ }),
-/* 20 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bluebird__);
@@ -439,11 +400,11 @@ const message = __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.model('Message'
 /* harmony default export */ __webpack_exports__["a"] = (message);
 
 /***/ }),
-/* 21 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bluebird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bluebird__);
@@ -467,15 +428,90 @@ const user = __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.model('User', User
 /* harmony default export */ __webpack_exports__["a"] = (user);
 
 /***/ }),
-/* 22 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__db_methods__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__db_methods__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_upload__ = __webpack_require__(21);
+
+
+
+
+
+const auth = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a();
+
+auth.post('/login', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
+    if (ctx.request.body.username && ctx.request.body.password) {
+        await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["c" /* login */])(ctx.request.body).then(res => {
+            ctx.response.body = res;
+        });
+    } else {
+        ctx.response.body = { success: true, message: 'no enough data!' };
+    }
+});
+
+auth.post('/register', __WEBPACK_IMPORTED_MODULE_3__utils_upload__["a" /* default */].single('file'), __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
+    const { username, password, email, gender, age } = ctx.req.body;
+    if (username && password && email && gender && age) {
+        const image = ctx.req.file ? `/uploads/${ctx.req.file.filename}` : '';
+        const userBody = Object.assign({}, ctx.req.body, {
+            image
+        });
+        await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["d" /* register */])(userBody).then(res => {
+            ctx.response.body = res;
+        });
+    } else {
+        ctx.response.body = { success: false, message: 'no enough data!' };
+    }
+});
+
+/* harmony default export */ __webpack_exports__["a"] = (auth);
+
+/***/ }),
+/* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_multer__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_multer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_multer__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_path__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_path__);
+
+
+
+const storage = __WEBPACK_IMPORTED_MODULE_0_koa_multer___default.a.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, __WEBPACK_IMPORTED_MODULE_1_path___default.a.resolve('./static/uploads/'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+const upload = __WEBPACK_IMPORTED_MODULE_0_koa_multer___default()({ storage });
+
+/* harmony default export */ __webpack_exports__["a"] = (upload);
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+module.exports = require("koa-multer");
+
+/***/ }),
+/* 23 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_router__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_koa_bodyparser__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__db_methods__ = __webpack_require__(2);
 
 
 
@@ -484,7 +520,7 @@ const messages = new __WEBPACK_IMPORTED_MODULE_0_koa_router___default.a();
 
 messages.post('/send', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
     console.log(ctx.request.body);
-    await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["d" /* sendMessage */])(ctx.request.body).then(res => {
+    await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["e" /* sendMessage */])(ctx.request.body).then(res => {
         ctx.response.body = res;
     }).catch(e => {
         ctx.response.body = e;
@@ -492,7 +528,7 @@ messages.post('/send', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(),
 });
 
 messages.patch('/messages', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default()(), async ctx => {
-    await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["a" /* getMessages */])(ctx.request.body).then(res => {
+    await Object(__WEBPACK_IMPORTED_MODULE_2__db_methods__["b" /* getMessages */])(ctx.request.body).then(res => {
         ctx.response.body = res;
     });
 });
@@ -500,12 +536,12 @@ messages.patch('/messages', __WEBPACK_IMPORTED_MODULE_1_koa_bodyparser___default
 /* harmony default export */ __webpack_exports__["a"] = (messages);
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__db___ = __webpack_require__(24);
-if (true) __webpack_require__(3).config();
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__db___ = __webpack_require__(25);
+if (true) __webpack_require__(4).config();
 
 
 const { PORT, HOST } = process.env;
@@ -516,13 +552,13 @@ const { PORT, HOST } = process.env;
 });
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
-if (true) __webpack_require__(3).config();
+if (true) __webpack_require__(4).config();
 
 
 const { DB_USER, DB_USER_PASS, DB_HOST, DB_PORT, DB_NAME } = process.env;
@@ -532,7 +568,62 @@ const { DB_USER, DB_USER_PASS, DB_HOST, DB_PORT, DB_NAME } = process.env;
 });
 
 /***/ }),
-/* 25 */
+/* 26 */
+/***/ (function(module, exports) {
+
+module.exports = require("koa-mount");
+
+/***/ }),
+/* 27 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_static__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa_static___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa_static__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_send__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_koa_send___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_koa_send__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_koa__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_koa__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_koa_router__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_koa_router___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_koa_router__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_path__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_path__);
+
+
+
+
+
+
+const front = new __WEBPACK_IMPORTED_MODULE_2_koa___default.a();
+const router = new __WEBPACK_IMPORTED_MODULE_3_koa_router___default.a();
+
+front.use(__WEBPACK_IMPORTED_MODULE_0_koa_static___default()(__WEBPACK_IMPORTED_MODULE_4_path___default.a.resolve('static')));
+front.use(router.routes());
+front.use(router.allowedMethods());
+
+router.get('*', async ctx => {
+    const { url } = ctx;
+    switch (url) {
+        case '/user/style.css':
+            await __WEBPACK_IMPORTED_MODULE_1_koa_send___default()(ctx, './static/style.css');
+            break;
+        case '/user/bundle.js':
+            await __WEBPACK_IMPORTED_MODULE_1_koa_send___default()(ctx, './static/bundle.js');
+            break;
+        case '/user/style.css.map':
+            await __WEBPACK_IMPORTED_MODULE_1_koa_send___default()(ctx, './static/style.css.map');
+            break;
+        default:
+            await __WEBPACK_IMPORTED_MODULE_1_koa_send___default()(ctx, './static/index.html');
+
+            break;
+    }
+});
+
+/* harmony default export */ __webpack_exports__["a"] = (front);
+
+/***/ }),
+/* 28 */
 /***/ (function(module, exports) {
 
 module.exports = require("koa-static");

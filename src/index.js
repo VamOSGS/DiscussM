@@ -1,15 +1,19 @@
 // @flow
-import path from 'path';
 import Koa from 'koa';
 import cors from '@koa/cors';
 import router from './router';
 import start from './utils/start';
+import mount from 'koa-mount';
+import front from './utils/serveFront';
+
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
-import serve from 'koa-static';
 
 const app = new Koa();
+const api = new Koa();
 
 start(app);
-app.use(serve(path.resolve('./static')));
-app.use(cors('*'));
-app.use(router);
+api.use(cors('*'));
+api.use(router);
+
+app.use(mount('/api', api));
+app.use(mount('/', front));

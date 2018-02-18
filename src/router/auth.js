@@ -17,9 +17,10 @@ auth.post('/login', koaBody(), async (ctx) => {
 
 auth.post('/register', upload.single('file'), koaBody(), async (ctx) => {
     const { username, password, email, gender, age } = ctx.req.body;
-    const { filename } = ctx.req.file;
     if (username && password && email && gender && age) {
-        const image = filename ? `/uploads/${filename}` : '';
+        const image = ctx.req.file
+            ? `/uploads/${ctx.req.file.filename}`
+            : '';
         const userBody = {
             ...ctx.req.body,
             image,
@@ -28,7 +29,7 @@ auth.post('/register', upload.single('file'), koaBody(), async (ctx) => {
             ctx.response.body = res;
         });
     } else {
-        ctx.response.body = { success: true, message: 'no enough data!' };
+        ctx.response.body = { success: false, message: 'no enough data!' };
     }
 });
 

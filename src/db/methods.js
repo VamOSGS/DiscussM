@@ -14,14 +14,18 @@ export async function register(data: UserType) {
         if (res === null) {
             return check({ email: data.email }).then(async (res2) => {
                 if (res2 === null) {
-                    const user = await new User({
+                    const user = new User({
                         username: data.username,
                         name: data.name,
                         age: data.age,
                         email: data.email,
                         gender: data.gender,
-                        image: data.image,
                     });
+                    user.image =
+                        data.image === ''
+                            ? '/uploads/user-default.png'
+                            : data.image;
+
                     const salt: string = bcrypt.genSaltSync(10);
                     user.password = bcrypt.hashSync(data.password, salt);
                     return user.save().then((user) => {
@@ -29,11 +33,20 @@ export async function register(data: UserType) {
                         return { success: true, user, token };
                     });
                 } else {
-                    return { success: false, message: 'Email registred!' };
+                    return {
+                        success: false,
+                        error: {
+                            field: 'email',
+                            message: 'Email registred!',
+                        },
+                    };
                 }
             });
         } else {
-            return { success: false, message: 'Username taken!' };
+            return {
+                success: false,
+                error: { field: 'username', message: 'Username taken!' },
+            };
         }
     });
 }
@@ -41,14 +54,20 @@ export async function register(data: UserType) {
 export async function login(data: { username: string, password: string }) {
     return check({ username: data.username }).then((user) => {
         if (user === null) {
-            return { success: false, message: 'User not found!' };
+            return {
+                success: false,
+                error: { field: 'username', message: 'User not found!' },
+            };
         } else {
             const passCheck = bcrypt.compareSync(data.password, user.password);
             if (passCheck === true) {
                 const token = createToken({ user }, '10m');
                 return { success: true, user, token };
             } else {
-                return { success: false, message: 'Wrong password!' };
+                return {
+                    success: false,
+                    error: { field: 'password', message: 'Wrong password!' },
+                };
             }
         }
     });
@@ -60,7 +79,7 @@ export function sendMessage(data: MessageType): Promise<any> {
             if (user === null) {
                 reject({
                     success: false,
-                    message: 'User not found!',
+                    error: { field: 'user', message: 'Wrong password!' },
                 });
             } else {
                 Message.findOneAndUpdate(
