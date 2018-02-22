@@ -5,10 +5,11 @@ import { sendMessage, getMessages } from '../db/methods';
 const messages = new Router();
 
 messages.post('/send', bodyParser(), async (ctx) => {
-    console.log(ctx.request.body);
     await sendMessage(ctx.request.body)
         .then((res) => {
-            ctx.response.body = res;
+            ctx.response.body = {
+                success: res.success,
+            };
         })
         .catch((e) => {
             ctx.response.body = e;
@@ -17,7 +18,11 @@ messages.post('/send', bodyParser(), async (ctx) => {
 
 messages.patch('/messages', bodyParser(), async (ctx) => {
     await getMessages(ctx.request.body).then((res) => {
-        ctx.response.body = res;
+        if (res === null) {
+            ctx.response.body = {messages: [], success: true};
+        } else {
+            ctx.response.body = {messages: res.messages, success: true};
+        }
     });
 });
 
