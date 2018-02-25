@@ -2,6 +2,7 @@
 
 export type UserType = {
     username: string,
+    fbid: string,
     name: string,
     image: string,
     gender: string,

@@ -8,7 +8,8 @@ const UserSchema = new Schema({
     name: { type: String },
     gender: { type: String, required: true },
     image: { type: String },
-    age: { type: Number, required: true },
+    age: { type: Number },
+    fbid: { type: String },
     email: { type: String, required: true },
     password: { type: String }, // social auth will not have password
 });

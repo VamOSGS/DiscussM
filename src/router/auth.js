@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 import koaBody from 'koa-bodyparser';
-import { register, login } from '../db/methods';
+import { register, login, fb, check } from '../db/methods';
 
 const auth = new Router();
 
@@ -12,6 +12,21 @@ auth.post('/login', koaBody(), async (ctx) => {
     } else {
         ctx.response.body = { success: true, message: 'no enough data!' };
     }
+});
+
+auth.post('/fb', koaBody(), async (ctx) => {
+    await fb(ctx.request.body).then((res) => {
+        ctx.response.body = res;
+    });
+});
+auth.post('/fbCheck', koaBody(), async (ctx) => {
+    await check(ctx.request.body).then((res) => {
+        if (res === null) {
+            ctx.response.body = true;
+        } else {
+            ctx.response.body = false;
+        }
+    });
 });
 
 auth.post('/register', koaBody(), async (ctx) => {
