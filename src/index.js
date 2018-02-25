@@ -1,6 +1,8 @@
 // @flow
 import Koa from 'koa';
+import path from 'path';
 import cors from '@koa/cors';
+import favicon from 'koa-favicon';
 import router from './router';
 import start from './utils/start';
 import mount from 'koa-mount';
@@ -12,6 +14,7 @@ const app = new Koa();
 const api = new Koa();
 
 start(app);
+app.use(favicon(path.resolve('static/favicon.ico')));
 api.use(cors('*'));
 api.use(router);
 

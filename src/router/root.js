@@ -13,12 +13,14 @@ root.get('/user/:username', async (ctx) => {
     const user = await check({ username });
     if (user == null) {
         ctx.body = {
-            success: false,
+            success: true,
+            notFound: true,
             message: 'User not found',
         };
     } else {
         ctx.body = {
             success: true,
+            notFound: false,
             id: user._id,
             username: user.username,
             image: user.image,

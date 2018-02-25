@@ -1,7 +1,6 @@
 import Router from 'koa-router';
 import koaBody from 'koa-bodyparser';
 import { register, login } from '../db/methods';
-import upload from '../utils/upload';
 
 const auth = new Router();
 
@@ -15,17 +14,10 @@ auth.post('/login', koaBody(), async (ctx) => {
     }
 });
 
-auth.post('/register', upload.single('file'), koaBody(), async (ctx) => {
-    const { username, password, email, gender, age } = ctx.req.body;
+auth.post('/register', koaBody(), async (ctx) => {
+    const { username, password, email, gender, age, image } = ctx.request.body;
     if (username && password && email && gender && age) {
-        const image = ctx.req.file
-            ? `/uploads/${ctx.req.file.filename}`
-            : '';
-        const userBody = {
-            ...ctx.req.body,
-            image,
-        };
-        await register(userBody).then((res) => {
+        await register(ctx.request.body).then((res) => {
             ctx.response.body = res;
         });
     } else {
