@@ -6,11 +6,11 @@ mongoose.Promise = bluebird;
 const UserSchema = new Schema({
     username: { type: String, required: true, index: { unique: true } },
     name: { type: String },
-    gender: { type: String, required: true },
+    gender: { type: String },
     image: { type: String },
     age: { type: Number },
     fbid: { type: String },
-    email: { type: String, required: true },
+    email: { type: String },
     password: { type: String }, // social auth will not have password
 });
 

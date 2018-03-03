@@ -8,7 +8,7 @@ import start from './utils/start';
 import mount from 'koa-mount';
 import front from './utils/serveFront';
 
-if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+if (process.env.NODE_ENV === 'development') require('dotenv').config();
 
 const app = new Koa();
 const api = new Koa();

@@ -110,23 +110,28 @@ export async function getMessages(user: { id: string, username: string }) {
 export async function fb(data: UserType) {
     return check({ fbid: data.fbid }).then((res) => {
         if (res === null) {
+            return check({ username: data.username }).then((resUsername) => {
+                if (resUsername === null) {
+                    const user = new User(data);
+                    return user.save().then((user) => {
+                        const token = createToken({ user }, '10m');
+                        return { set: true, success: true, user, token };
+                    });
+                } else {
+                    return {
+                        success: false,
+                        error: {
+                            field: 'username',
+                            message: 'Username taken!',
+                        },
+                    };
+                }
+            });
             // REGISTER
-            const user = new User({
-                username: data.username,
-                name: data.name,
-                email: data.email,
-                gender: data.gender,
-                fbid: data.fbid,
-                image: data.image,
-            });
-            return user.save().then((user) => {
-                const token = createToken({ user }, '10m');
-                return { success: true, user, token };
-            });
         } else {
             // LOGIN
             const token = createToken({ user: res }, '10m');
-            return { success: true, user: res, token };
+            return { set: false, success: true, user: res, token };
         }
     });
 }

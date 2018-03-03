@@ -191,23 +191,28 @@ async function getMessages(user) {
 async function fb(data) {
     return check({ fbid: data.fbid }).then(res => {
         if (res === null) {
+            return check({ username: data.username }).then(resUsername => {
+                if (resUsername === null) {
+                    const user = new __WEBPACK_IMPORTED_MODULE_2__models_index_js__["b" /* User */](data);
+                    return user.save().then(user => {
+                        const token = Object(__WEBPACK_IMPORTED_MODULE_1_jwt_koa__["createToken"])({ user }, '10m');
+                        return { set: true, success: true, user, token };
+                    });
+                } else {
+                    return {
+                        success: false,
+                        error: {
+                            field: 'username',
+                            message: 'Username taken!'
+                        }
+                    };
+                }
+            });
             // REGISTER
-            const user = new __WEBPACK_IMPORTED_MODULE_2__models_index_js__["b" /* User */]({
-                username: data.username,
-                name: data.name,
-                email: data.email,
-                gender: data.gender,
-                fbid: data.fbid,
-                image: data.image
-            });
-            return user.save().then(user => {
-                const token = Object(__WEBPACK_IMPORTED_MODULE_1_jwt_koa__["createToken"])({ user }, '10m');
-                return { success: true, user, token };
-            });
         } else {
             // LOGIN
             const token = Object(__WEBPACK_IMPORTED_MODULE_1_jwt_koa__["createToken"])({ user: res }, '10m');
-            return { success: true, user: res, token };
+            return { set: false, success: true, user: res, token };
         }
     });
 }
@@ -450,11 +455,11 @@ __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Promise = __WEBPACK_IMPORTED_MO
 const UserSchema = new __WEBPACK_IMPORTED_MODULE_0_mongoose__["Schema"]({
     username: { type: String, required: true, index: { unique: true } },
     name: { type: String },
-    gender: { type: String, required: true },
+    gender: { type: String },
     image: { type: String },
     age: { type: Number },
     fbid: { type: String },
-    email: { type: String, required: true },
+    email: { type: String },
     password: { type: String } // social auth will not have password
 });
 
